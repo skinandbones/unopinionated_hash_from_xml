@@ -1,0 +1,58 @@
+=====================================================================
+UnopinionatedHashFromXml
+=====================================================================
+
+Adds an option to Hash#from_xml to allow you to bypass automatic hash
+key "unrenaming".  As of Rails 2.3, Hash#from_xml will sanitize the
+XML node names when it creates the keys for the newly formed hash.
+For example, an XML node with the name "fontName" will have the key
+"font_name" in the resulting hash.
+
+This plugin adds an optional parameter to Hash#from_xml to get the
+pre-Rails 2.3 behavior where keys are not renamed.  
+
+Hash.from_xml(xml, :unrename_keys => false)
+
+=====================================================================
+Example:
+=====================================================================
+
+>> xml = <<-END
+  <doc>
+    <titleSize>20</titleSize>
+    <bodySize>10</bodySize>
+    <footer-size>10</footer-size>
+    <title>Stuff</title>
+    <TopLevel>
+      <middle-level-one>
+        <bottom>1</bottom>
+      </middle-level-one>
+      <middleLevelTwo>
+        <Bottom>2</Bottom>
+      </middleLevelTwo>
+    </TopLevel>
+  </doc>
+END
+
+>> pp Hash.from_xml(xml)
+{"doc"=>
+  {"body_size"=>"10",
+   "title"=>"Stuff",
+   "title_size"=>"20",
+   "top_level"=>
+    {"middle_level_two"=>{"bottom"=>"2"}, "middle_level_one"=>{"bottom"=>"1"}},
+   "footer_size"=>"10"}}
+
+
+>> pp Hash.from_xml(xml, :unrename_keys => false)
+{"doc"=>
+  {"footer-size"=>"10",
+   "title"=>"Stuff",
+   "titleSize"=>"20",
+   "bodySize"=>"10",
+   "TopLevel"=>
+    {"middleLevelTwo"=>{"Bottom"=>"2"}, "middle-level-one"=>{"bottom"=>"1"}}}}
+
+
+
+Copyright (c) 2009 Blake Carlson, released under the MIT license
