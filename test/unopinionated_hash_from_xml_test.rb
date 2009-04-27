@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.join(File.dirname(__FILE__), 'test_helper')
 require 'unopinionated_hash_from_xml'
 
 class UnopinionatedHashFromXmlTest < ActiveSupport::TestCase
